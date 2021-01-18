@@ -25,6 +25,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listapps = findViewById(R.id.xmlListView);
+
+        Log.d(TAG, "onCreate: starting Async Task");
+        DownloadData downloadData = new DownloadData();
+        downloadData.execute(feedURL);
+        Log.d(TAG, "onCreate: async task is done");
     }
 
     // Downloaddata class for async downloading of xml files
