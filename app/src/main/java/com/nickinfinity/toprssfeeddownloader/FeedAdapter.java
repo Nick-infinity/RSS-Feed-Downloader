@@ -34,21 +34,39 @@ public class FeedAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
-        View view = layoutInflater.inflate(layoutResource,parent,false);
-
-        TextView tvName = view.findViewById(R.id.tvName);
-        TextView tvArtist = view.findViewById(R.id.tvArtist);
-        TextView tvSummary = view.findViewById(R.id.tvSummary);
-
+        ViewHolder viewHolder;
+        // View view = layoutInflater.inflate(layoutResource,parent,false);
+        if(convertView == null)
+        {
+            convertView = layoutInflater.inflate(layoutResource,parent,false);
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        }
+        else{
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+//        TextView tvName = convertView.findViewById(R.id.tvName);
+//        TextView tvArtist = convertView.findViewById(R.id.tvArtist);
+//        TextView tvSummary = convertView.findViewById(R.id.tvSummary);
         FeedEntry currentApplication = this.applications.get(position);
-
-        tvName.setText(currentApplication.getName());
-        tvArtist.setText(currentApplication.getArtist());
-        tvSummary.setText(currentApplication.getSummary());
-
-        return view;
+        viewHolder = (ViewHolder) convertView.getTag();
+        viewHolder.tvName.setText(currentApplication.getName());
+        viewHolder.tvArtist.setText(currentApplication.getArtist());
+        viewHolder.tvSummary.setText(currentApplication.getSummary());
+        return convertView;
     }
 
+    private class ViewHolder{
+        final TextView tvName;
+        final TextView tvArtist;
+        final TextView tvSummary;
 
+        ViewHolder(View v)
+        {
+            this.tvName = v.findViewById(R.id.tvName);
+            this.tvArtist = v.findViewById(R.id.tvArtist);
+            this.tvSummary = v.findViewById(R.id.tvSummary);
+
+        }
+    }
 }
