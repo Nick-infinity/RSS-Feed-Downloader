@@ -18,7 +18,9 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private ListView listapps;
-    String feedURL = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml";
+    String feedURL = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=%/xml";
+    int feedLimit = 10;
+    public String feedCachedURL = "INVALIDATED";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +28,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listapps = findViewById(R.id.xmlListView);
 
-        Log.d(TAG, "onCreate: starting Async Task");
-        DownloadData downloadData = new DownloadData();
-        downloadData.execute(feedURL);
-        Log.d(TAG, "onCreate: async task is done");
+//        Log.d(TAG, "onCreate: starting Async Task");
+//        DownloadData downloadData = new DownloadData();
+//        downloadData.execute(feedURL);
+//        Log.d(TAG, "onCreate: async task is done");
+
+        // entry point for downloading xml
+        downloadURL(String.format(feedURL,feedLimit));
+    }
+
+
+    public void downloadURL(String feedURL){
+        if(!feedURL.equalsIgnoreCase(feedCachedURL)) {
+            Log.d(TAG, "downloadURL: starting Async Task");
+            DownloadData downloadData = new DownloadData();
+            downloadData.execute(feedURL);
+            feedCachedURL=feedURL;
+            Log.d(TAG, "downloadURL: async task is done");
+        } else{
+            Log.d(TAG, "downloadURL: Feed url not changed");
+        }
     }
 
     // Downloaddata class for async downloading of xml files
