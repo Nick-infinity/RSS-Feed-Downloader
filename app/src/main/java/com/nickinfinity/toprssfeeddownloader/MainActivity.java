@@ -18,7 +18,7 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private ListView listapps;
-
+    String feedURL = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=10/xml";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,15 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             Log.d(TAG, "onPostExecute: parameter is" + s);
+            ParseApplications parseApplications = new ParseApplications();
+
+            //parsing data from xml (XMLPullParse)
+            parseApplications.parse(s);
+
+            FeedAdapter feedAdapter = new FeedAdapter(MainActivity.this,R.layout.list_record,parseApplications.getApplications());
+
+            // set adapter to listView
+            listapps.setAdapter(feedAdapter);
         }
 
         @Override
