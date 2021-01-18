@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     String feedURL = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=%/xml";
     int feedLimit = 10;
     public String feedCachedURL = "INVALIDATED";
+    public static final String STATE_URL = "feedURL";
+    public static final String STATE_LIMIT = "feedLimit";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listapps = findViewById(R.id.xmlListView);
 
-//        Log.d(TAG, "onCreate: starting Async Task");
-//        DownloadData downloadData = new DownloadData();
-//        downloadData.execute(feedURL);
-//        Log.d(TAG, "onCreate: async task is done");
+        if(savedInstanceState != null){
+            feedURL = savedInstanceState.getString(STATE_URL);
+            feedLimit = savedInstanceState.getInt(STATE_LIMIT);
+        }
 
         // entry point for downloading xml
         downloadURL(String.format(feedURL,feedLimit));
@@ -91,6 +93,16 @@ public class MainActivity extends AppCompatActivity {
         downloadURL(String.format(feedURL,feedLimit));
         return true;
 
+    }
+
+
+    // Saving Data between State change
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(STATE_URL,feedURL);
+        outState.putInt(STATE_LIMIT,feedLimit);
+        super.onSaveInstanceState(outState);
     }
 
     public void downloadURL(String feedURL){
