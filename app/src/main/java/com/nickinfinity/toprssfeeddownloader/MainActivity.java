@@ -3,8 +3,11 @@ package com.nickinfinity.toprssfeeddownloader;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
@@ -37,6 +40,58 @@ public class MainActivity extends AppCompatActivity {
         downloadURL(String.format(feedURL,feedLimit));
     }
 
+
+    // Menu Code
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.feeds_menu,menu);
+        if(feedLimit==10)
+        {
+            menu.findItem(R.id.menu10).setChecked(true);
+        }
+        else if(feedLimit== 25){
+            menu.findItem(R.id.menu25).setChecked(true);
+        }
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.menuFree:
+                feedURL="http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/limit=%d/xml";
+                break;
+            case R.id.menuPaid:
+                feedURL="http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/toppaidapplications/limit=%d/xml";
+                break;
+            case R.id.menuSongs:
+                feedURL="http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topsongs/limit=%d/xml";
+                break;
+            case R.id.menu10:
+            case R.id.menu25:
+                if(!item.isChecked())
+                {
+                    item.setChecked(true);
+                    feedLimit = 35-feedLimit;
+                    Log.d(TAG, "onOptionsItemSelected:"+item.getTitle()+"changing feed limit to "+feedLimit);
+                }else{
+                    Log.d(TAG, "onOptionsItemSelected: "+item.getTitle()+"feed limit is unchanged"+feedLimit);
+                }
+                break;
+            case R.id.menuRefresh:
+                feedCachedURL="INVALIDATED";
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+        downloadURL(String.format(feedURL,feedLimit));
+        return true;
+
+    }
 
     public void downloadURL(String feedURL){
         if(!feedURL.equalsIgnoreCase(feedCachedURL)) {
